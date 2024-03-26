@@ -17,13 +17,13 @@ wordepth
 
 pip install -r requirements.txt
 ```
-## Run NYU-Depth-V2##
+## Run NYU-Depth-V2 ##
 Specify GPU Number train_nyu.sh, then run by:
 ```
 sh train_nyu.sh
 ```
 Before running new experiments, remember to change the model_name in train_nyu.sh and config/arguments_train_nyu.txt to be the same.
-## Run KITTI##
+## Run KITTI ##
 Specify GPU Number train_kitti.sh, then run by:
 ```
 sh train_kitti.sh
