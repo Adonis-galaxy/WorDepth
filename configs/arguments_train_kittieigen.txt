@@ -1,9 +1,9 @@
 --mode train
---model_name 0322_0_wordepth_1en2_eps_with_mean_kitti_tmux2
+--model_name 0326_0_alter_0_kitti_tmux1
 --pretrain ./swin_large_patch4_window12_384_22k.pth
 --dataset kitti
---data_path /media/home/zyzeng/wordepth_backup/dataset_staging/kitti_raw_data/
---gt_path /media/home/zyzeng/wordepth_backup/dataset_staging/ground_truth/
+--data_path /media/staging1/zyzeng/datasets/kitti_raw_data/
+--gt_path /media/staging1/zyzeng/datasets/ground_truth/
 --filenames_file data_splits/eigen_train_files_with_gt.txt
 --batch_size 3
 --num_epochs 50
@@ -18,15 +18,16 @@
 --prior_mean 2.54
 --do_kb_crop
 --log_directory ./models/
---multiprocessing_distributed
---dist_url tcp://127.0.0.1:9342
 
 --log_freq 200
 --do_online_eval
 --eval_freq 2500
---data_path_eval /media/home/zyzeng/wordepth_backup/dataset_staging/kitti_raw_data/
---gt_path_eval /media/home/zyzeng/wordepth_backup/dataset_staging/ground_truth/
+--data_path_eval /media/staging1/zyzeng/datasets/kitti_raw_data/
+--gt_path_eval /media/staging1/zyzeng/datasets/ground_truth/
 --filenames_file_eval data_splits/eigen_test_files_with_gt.txt
 --min_depth_eval 1e-3
 --max_depth_eval 80
 --garg_crop
+
+--weight_kld 1e-3
+--alter_prob 0
