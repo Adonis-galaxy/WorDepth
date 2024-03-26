@@ -1,20 +1,15 @@
 import torch
-import torch.nn as nn
-import torch.nn.utils as utils
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
 import torch.multiprocessing as mp
 
 import os, sys, time
-from telnetlib import IP
 import argparse
 import numpy as np
 from tqdm import tqdm
 
 from tensorboardX import SummaryWriter
-
-from utils import compute_errors, eval_metrics, \
-                       block_print, enable_print, normalize_result, inv_normalize, convert_arg_line_to_args
+from utils import compute_errors, eval_metrics, block_print, enable_print, convert_arg_line_to_args
 from networks.wordepth import WorDepth
 
 
@@ -281,23 +276,14 @@ def main_worker(gpu, ngpus_per_node, args):
         model.train()
     # Logging
     if not args.multiprocessing_distributed or (args.multiprocessing_distributed and args.rank % ngpus_per_node == 0):
-        writer = SummaryWriter(args.log_directory + '/' + args.model_name + '/summaries', flush_secs=30)
         if args.do_online_eval:
             if args.eval_summary_directory != '':
                 eval_summary_path = os.path.join(args.eval_summary_directory, args.model_name)
             else:
                 eval_summary_path = os.path.join(args.log_directory, args.model_name, 'eval')
-            eval_summary_writer = SummaryWriter(eval_summary_path, flush_secs=30)
+            summary_writer = SummaryWriter(eval_summary_path, flush_secs=30)
 
-    duration = 0
-
-    end_learning_rate = args.end_learning_rate if args.end_learning_rate != -1 else 0.1 * args.learning_rate
-
-    var_sum = [var.sum().item() for var in model.parameters() if var.requires_grad]
-    var_cnt = len(var_sum)
-    var_sum = np.sum(var_sum)
-
-    print("== Initial variables' sum: {:.3f}, avg: {:.3f}".format(var_sum, var_sum/var_cnt))
+    end_learning_rate = args.end_learning_rate if args.end_learning_rate != -1 else args.learning_rate
 
     steps_per_epoch = len(dataloader.data)
     num_total_steps = args.num_epochs * steps_per_epoch
@@ -317,9 +303,6 @@ def main_worker(gpu, ngpus_per_node, args):
             # Read Text and Image Feature
             text_feature_list = []
             for i in range(len(sample_batched['sample_path'])):
-
-                # TODO: This is data loading and should be in the dataloader so we can
-                # make use of multithreading
                 if args.dataset == "nyu":
                     text_feature_path = args.data_path+sample_batched['sample_path'][i].split(' ')[0][:-4]+'.pt'
                 elif args.dataset == "kitti":
@@ -342,19 +325,17 @@ def main_worker(gpu, ngpus_per_node, args):
                 current_lr = (args.learning_rate - end_learning_rate) * (1 - global_step / num_total_steps) ** 0.9 + end_learning_rate
                 param_group['lr'] = current_lr
 
-            duration += time.time() - before_op_time
             if global_step and global_step % args.log_freq == 0 and not model_just_loaded and gpu == 0:
-
+                summary_writer.add_scalar("training_loss", loss.item(), int(global_step))
                 print('epoch:', epoch, 'global_step:', global_step, 'loss:', loss.item(), flush=True)
 
             if args.do_online_eval and global_step and global_step % args.eval_freq == 0 and not model_just_loaded:
-                time.sleep(0.1)
                 model.eval()
                 with torch.no_grad():
                     eval_measures = online_eval(model, dataloader_eval, gpu, ngpus_per_node, post_process=False)
                 if eval_measures is not None:
                     for i in range(9):
-                        eval_summary_writer.add_scalar(eval_metrics[i], eval_measures[i].cpu(), int(global_step))
+                        summary_writer.add_scalar(eval_metrics[i], eval_measures[i].cpu(), int(global_step))
                         measure = eval_measures[i]
                         is_best = False
                         if i < 6 and measure < best_eval_measures_lower_better[i]:
@@ -377,13 +358,13 @@ def main_worker(gpu, ngpus_per_node, args):
                             print('New best for {}. Saving model: {}'.format(eval_metrics[i], model_save_name))
                             checkpoint = {'global_step': global_step,
                                           'model': model.state_dict(),
-                                          #'optimizer': optimizer.state_dict(),
+                                          'optimizer': optimizer.state_dict(),
                                           'best_eval_measures_higher_better': best_eval_measures_higher_better,
                                           'best_eval_measures_lower_better': best_eval_measures_lower_better,
                                           'best_eval_steps': best_eval_steps
                                           }
                             torch.save(checkpoint, args.log_directory + '/' + args.model_name + model_save_name)
-                    eval_summary_writer.flush()
+                    summary_writer.flush()
                 model.train()
                 block_print()
                 enable_print()
@@ -393,10 +374,6 @@ def main_worker(gpu, ngpus_per_node, args):
 
         epoch += 1
 
-    if not args.multiprocessing_distributed or (args.multiprocessing_distributed and args.rank % ngpus_per_node == 0):
-        writer.close()
-        if args.do_online_eval:
-            eval_summary_writer.close()
 
 
 def main():
