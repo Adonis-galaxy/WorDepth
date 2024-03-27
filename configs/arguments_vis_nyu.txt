@@ -1,5 +1,5 @@
 --mode train
---model_name 0327_vis_nyu_alter_09
+--model_name 0327_vis_nyu_alter_001
 --pretrain ./swin_large_patch4_window12_384_22k.pth
 --dataset nyu
 --data_path /media/staging1/zyzeng/nyu_depth_v2/sync/
@@ -18,7 +18,7 @@
 --do_random_rotate
 --degree 2.5
 --log_directory ./models/
---checkpoint_path /media/home/zyzeng/wordepth_backup/WorDepth_ViT/models/0326_nyu_alter_09_tmux0/model-95000-best_rms_0.68678
+--checkpoint_path /media/home/zyzeng/workspace/WorDepth_Swin/models/0326_1_wordepth_nyu_alterprob_001_tmux1/model-112500-best_d1_0.92391
 
 --log_freq 100
 --do_online_eval
