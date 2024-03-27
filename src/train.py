@@ -197,7 +197,7 @@ def main_worker(args):
     if args.checkpoint_path != '':
         if os.path.isfile(args.checkpoint_path):
             print("== Loading checkpoint '{}'".format(args.checkpoint_path))
-            checkpoint = torch.load(args.checkpoint_path, map_location=loc)
+            checkpoint = torch.load(args.checkpoint_path)
             model.load_state_dict(checkpoint['model'])
             optimizer.load_state_dict(checkpoint['optimizer'])
             if not args.retrain:

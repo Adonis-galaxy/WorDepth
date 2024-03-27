@@ -31,3 +31,4 @@
 
 --weight_kld 1e-3
 --alter_prob 0
+--checkpoint_path ./models/0326_0_alter_0_kitti_tmux1/model-15000-best_rms_2.22648
