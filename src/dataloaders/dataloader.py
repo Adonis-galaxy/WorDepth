@@ -139,7 +139,6 @@ class DataLoadPreprocess(Dataset):
                 data_path = self.args.data_path
 
             image_path = os.path.join(data_path, sample_path.split()[0])
-
             image = np.asarray(Image.open(image_path), dtype=np.float32) / 255.0
 
             if self.mode == 'online_eval':

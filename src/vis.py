@@ -7,6 +7,8 @@ from tensorboardX import SummaryWriter
 from utils import compute_errors, eval_metrics, block_print, enable_print, convert_arg_line_to_args
 from networks.wordepth import WorDepth
 import matplotlib.pyplot as plt
+from torchvision.transforms.functional import to_pil_image
+from PIL import Image
 
 parser = argparse.ArgumentParser(description='WorDepth PyTorch implementation.', fromfile_prefix_chars='@')
 parser.convert_arg_line_to_args = convert_arg_line_to_args
@@ -77,7 +79,44 @@ if args.dataset == 'kitti' or args.dataset == 'nyu':
     from dataloaders.dataloader import NewDataLoader
 
 
-def online_eval(model, dataloader_eval, post_process=False, sample_from_gaussian_eval=None, vis_path=None):
+
+
+
+def main():
+    args_out_path = os.path.join(args.log_directory, args.model_name)
+    os.makedirs(args_out_path, exist_ok=True)
+    vis_pred_path = os.path.join(args_out_path, "vis_pred")
+    vis_sample_path = os.path.join(args_out_path, "vis_sample_from_gaussian")
+    os.makedirs(vis_pred_path, exist_ok=True)
+    os.makedirs(vis_sample_path, exist_ok=True)
+
+    depth_gt_save_path = os.path.join(args_out_path, "depth_gt")
+    image_save_path = os.path.join(args_out_path, "image")
+    os.makedirs(depth_gt_save_path, exist_ok=True)
+    os.makedirs(image_save_path, exist_ok=True)
+
+    model = WorDepth(pretrained=args.pretrain,
+                       max_depth=args.max_depth,
+                       prior_mean=args.prior_mean,
+                       img_size=(args.input_height, args.input_width),
+                       weight_kld=args.weight_kld,
+                       alter_prob=args.alter_prob)
+
+    model = torch.nn.DataParallel(model)
+    model.cuda()
+
+    print("== Model Initialized")
+    # ===== Load CKPT =====
+    print("== Loading checkpoint '{}'".format(args.checkpoint_path))
+    checkpoint = torch.load(args.checkpoint_path)
+    model.load_state_dict(checkpoint['model'])
+
+    dataloader_eval = NewDataLoader(args, 'online_eval')
+
+    # ===== Vis ======
+    model.eval()
+    post_process=True
+
     eval_measures = torch.zeros(10).cuda()
     for idx, eval_sample_batched in enumerate(tqdm(dataloader_eval.data)):
         with torch.no_grad():
@@ -90,6 +129,7 @@ def online_eval(model, dataloader_eval, post_process=False, sample_from_gaussian
 
             # Read Text and Image Feature
             text_feature_list = []
+            image_path = args.data_path_eval+eval_sample_batched['sample_path'][0].split(' ')[0]
             for i in range(len(eval_sample_batched['sample_path'])):
 
                 # TODO: This is data loading and should be in the dataloader so we can
@@ -106,9 +146,11 @@ def online_eval(model, dataloader_eval, post_process=False, sample_from_gaussian
             text_feature_list = torch.cat(text_feature_list, dim=0)
 
             # Forwarding Model
-            pred_depth = model(image, text_feature_list, sample_from_gaussian_eval=sample_from_gaussian_eval)
+            pred_depth = model(image, text_feature_list, sample_from_gaussian_eval=False)
+            sample_depth = model(image, text_feature_list, sample_from_gaussian_eval=True)
 
             pred_depth = pred_depth.cpu().numpy().squeeze()
+            sample_depth = sample_depth.cpu().numpy().squeeze()
             gt_depth = gt_depth.cpu().numpy().squeeze()
 
         if args.do_kb_crop:
@@ -123,17 +165,39 @@ def online_eval(model, dataloader_eval, post_process=False, sample_from_gaussian
         pred_depth[pred_depth > args.max_depth_eval] = args.max_depth_eval
         pred_depth[np.isinf(pred_depth)] = args.max_depth_eval
         pred_depth[np.isnan(pred_depth)] = args.min_depth_eval
+
+        sample_depth[sample_depth < args.min_depth_eval] = args.min_depth_eval
+        sample_depth[sample_depth > args.max_depth_eval] = args.max_depth_eval
+        sample_depth[np.isinf(sample_depth)] = args.max_depth_eval
+        sample_depth[np.isnan(sample_depth)] = args.min_depth_eval
+
         # Vis
+        ori_image = Image.open(image_path)
         if args.dataset == 'nyu':
             vis_depth = pred_depth[45:472, 43:608]
-            # vis_image = image.crop((43, 45, 608, 472))
-            # vis_gt_depth = gt_depth.crop((43, 45, 608, 472))
-        fig, ax = plt.subplots(figsize=(8, 6))
+            vis_sample_depth = sample_depth[45:472, 43:608]
+            vis_image = ori_image.crop((43, 45, 608, 472))
+            vis_gt_depth = gt_depth[45:472, 43:608]
+
+        fig, ax = plt.subplots()
         ax.imshow(vis_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
-        ax.set_title(f'Depth Map {idx + 1}')
         ax.axis('off')  # Disable axis
-        fig_path = os.path.join(vis_path, f'depth_map_{idx + 1}.png')
+        fig_path = os.path.join(vis_pred_path, f'pred_depth_{idx + 1}.png')
         plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
+
+        fig_path = os.path.join(image_save_path, f'image_{idx + 1}.png')
+        vis_image.save(fig_path)
+
+        ax.imshow(vis_gt_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
+        ax.axis('off')  # Disable axis
+        fig_path = os.path.join(depth_gt_save_path, f'depth_gt_{idx + 1}.png')
+        plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
+
+        ax.imshow(vis_sample_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
+        ax.axis('off')  # Disable axis
+        fig_path = os.path.join(vis_sample_path, f'sample_depth_{idx + 1}.png')
+        plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
+
         plt.close(fig)
 
         valid_mask = np.logical_and(gt_depth > args.min_depth_eval, gt_depth < args.max_depth_eval)
@@ -168,40 +232,6 @@ def online_eval(model, dataloader_eval, post_process=False, sample_from_gaussian
     for i in range(8):
         print('{:7.4f}, '.format(eval_measures_cpu[i]), end='')
     print('{:7.4f}'.format(eval_measures_cpu[8]))
-    return eval_measures_cpu
-
-def main():
-    args_out_path = os.path.join(args.log_directory, args.model_name)
-    os.makedirs(args_out_path, exist_ok=True)
-    args_vis_pred_path = os.path.join(args_out_path, "vis_pred")
-    args_vis_sample_path = os.path.join(args_out_path, "vis_sample_from_gaussian")
-    os.makedirs(args_vis_pred_path, exist_ok=True)
-    os.makedirs(args_vis_sample_path, exist_ok=True)
-
-    model = WorDepth(pretrained=args.pretrain,
-                       max_depth=args.max_depth,
-                       prior_mean=args.prior_mean,
-                       img_size=(args.input_height, args.input_width),
-                       weight_kld=args.weight_kld,
-                       alter_prob=args.alter_prob)
-
-    model = torch.nn.DataParallel(model)
-    model.cuda()
-
-    print("== Model Initialized")
-    # ===== Load CKPT =====
-    print("== Loading checkpoint '{}'".format(args.checkpoint_path))
-    checkpoint = torch.load(args.checkpoint_path)
-    model.load_state_dict(checkpoint['model'])
-
-    dataloader_eval = NewDataLoader(args, 'online_eval')
-
-    # ===== Evaluation before training ======
-    model.eval()
-    with torch.no_grad():
-        online_eval(model, dataloader_eval, post_process=True, sample_from_gaussian_eval=False, vis_path=args_vis_pred_path)
-        online_eval(model, dataloader_eval, post_process=True, sample_from_gaussian_eval=True, vis_path=args_vis_sample_path)
-
 
 if __name__ == '__main__':
     main()
