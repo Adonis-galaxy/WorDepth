@@ -247,7 +247,7 @@ class WorDepth(nn.Module):
         self.weight_kld = weight_kld
         self.alter_prob = alter_prob
 
-    def forward(self, image, text_feature_list, depth_gt=None):
+    def forward(self, image, text_feature_list, depth_gt=None, sample_from_gaussian_eval=None):
         '''
         Forwards the inputs through the network
 
@@ -266,6 +266,9 @@ class WorDepth(nn.Module):
             sample_from_gaussian = True
         else:
             sample_from_gaussian = False
+        # For vis gaussian
+        if sample_from_gaussian_eval is not None:
+            sample_from_gaussian = sample_from_gaussian_eval
         x2, x3, x4, x5 = self.backbone(image)
 
         metric = self.mlayer(x5)
