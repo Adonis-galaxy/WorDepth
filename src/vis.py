@@ -9,6 +9,8 @@ from networks.wordepth import WorDepth
 import matplotlib.pyplot as plt
 from torchvision.transforms.functional import to_pil_image
 from PIL import Image
+import shutil
+import os
 
 parser = argparse.ArgumentParser(description='WorDepth PyTorch implementation.', fromfile_prefix_chars='@')
 parser.convert_arg_line_to_args = convert_arg_line_to_args
@@ -95,6 +97,9 @@ def main():
     os.makedirs(depth_gt_save_path, exist_ok=True)
     os.makedirs(image_save_path, exist_ok=True)
 
+    txt_save_path = os.path.join(args_out_path, "txt")
+    os.makedirs(txt_save_path, exist_ok=True)
+
     model = WorDepth(pretrained=args.pretrain,
                        max_depth=args.max_depth,
                        prior_mean=args.prior_mean,
@@ -178,8 +183,21 @@ def main():
             vis_sample_depth = sample_depth[45:472, 43:608]
             vis_image = ori_image.crop((43, 45, 608, 472))
             vis_gt_depth = gt_depth[45:472, 43:608]
+        else:
+            vis_depth = pred_depth
+            vis_sample_depth = sample_depth
+            vis_image = ori_image
+            vis_gt_depth = gt_depth
 
-        fig, ax = plt.subplots()
+        height, width = vis_image.height, vis_image.width
+
+        # Set the dpi of the figure to match the image resolution
+        dpi = plt.rcParams['figure.dpi']
+
+        # Calculate the figsize to match the image resolution
+        figsize = width / dpi, height / dpi
+
+        fig, ax = plt.subplots(figsize=figsize)
         ax.imshow(vis_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
         ax.axis('off')  # Disable axis
         fig_path = os.path.join(vis_pred_path, f'pred_depth_{idx + 1}.png')
@@ -199,6 +217,11 @@ def main():
         plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
 
         plt.close(fig)
+
+        # Move the txt to the destination directory
+        txt_path = os.path.join(txt_save_path, f'caption_{idx + 1}.txt')
+        source_path = args.data_path_eval+eval_sample_batched['sample_path'][i].split(' ')[0][:-4]+'.txt'
+        shutil.move(source_path, txt_path)
 
         valid_mask = np.logical_and(gt_depth > args.min_depth_eval, gt_depth < args.max_depth_eval)
 
