@@ -2,3 +2,4 @@ __pycache__
 */__pycache__
 models
 swin_large_patch4_window12_384_22k.pth
+weights

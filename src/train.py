@@ -196,7 +196,7 @@ def main_worker(args):
             print("== Loading checkpoint '{}'".format(args.checkpoint_path))
             checkpoint = torch.load(args.checkpoint_path)
             model.load_state_dict(checkpoint['model'])
-            optimizer.load_state_dict(checkpoint['optimizer'])
+            # optimizer.load_state_dict(checkpoint['optimizer'])
             if not args.retrain:
                 try:
                     global_step = checkpoint['global_step']

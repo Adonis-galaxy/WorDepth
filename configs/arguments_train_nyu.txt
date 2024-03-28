@@ -1,9 +1,9 @@
 --mode train
---model_name 0326_0_alter_0_nyu_tmux0
+--model_name 0327_alter_01_con_nyu_tmux3
 --pretrain ./swin_large_patch4_window12_384_22k.pth
 --dataset nyu
---data_path /media/staging1/zyzeng/datasets/nyu_depth_v2/sync/
---gt_path /media/staging1/zyzeng/datasets/nyu_depth_v2/sync/
+--data_path /media/staging1/zyzeng/nyu_depth_v2/sync/
+--gt_path /media/staging1/zyzeng/nyu_depth_v2/sync/
 --filenames_file ./data_splits/nyudepthv2_train_files_with_gt.txt
 --batch_size 4
 --num_epochs 50
@@ -22,13 +22,13 @@
 --log_freq 100
 --do_online_eval
 --eval_freq 2500
---data_path_eval /media/staging1/zyzeng/datasets/nyu_depth_v2/official_splits/test/
---gt_path_eval /media/staging1/zyzeng/datasets/nyu_depth_v2/official_splits/test/
+--data_path_eval /media/staging1/zyzeng/nyu_depth_v2/official_splits/test/
+--gt_path_eval /media/staging1/zyzeng/nyu_depth_v2/official_splits/test/
 --filenames_file_eval ./data_splits/nyudepthv2_test_files_with_gt.txt
 --min_depth_eval 1e-3
 --max_depth_eval 10
 --eigen_crop
 
 --weight_kld 1e-3
---alter_prob 0
---checkpoint_path ./models/0326_0_alter_0_nyu_tmux0/model-15000-best_log10_0.04052
+--alter_prob 0.1
+--checkpoint_path ./weights/nyu_ckpt
