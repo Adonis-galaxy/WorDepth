@@ -11,6 +11,8 @@ from torchvision.transforms.functional import to_pil_image
 from PIL import Image
 import shutil
 import os
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+import matplotlib
 
 parser = argparse.ArgumentParser(description='WorDepth PyTorch implementation.', fromfile_prefix_chars='@')
 parser.convert_arg_line_to_args = convert_arg_line_to_args
@@ -93,14 +95,17 @@ def main():
     os.makedirs(vis_sample_path, exist_ok=True)
 
     depth_gt_save_path = os.path.join(args_out_path, "depth_gt")
-    depth_gt_save_path_colorbar = os.path.join(args_out_path, "depth_gt_colorbar")
+    # depth_gt_save_path_colorbar = os.path.join(args_out_path, "depth_gt_colorbar")
     image_save_path = os.path.join(args_out_path, "image")
     os.makedirs(depth_gt_save_path, exist_ok=True)
     os.makedirs(image_save_path, exist_ok=True)
-    os.makedirs(depth_gt_save_path_colorbar, exist_ok=True)
+    # os.makedirs(depth_gt_save_path_colorbar, exist_ok=True)
 
     txt_save_path = os.path.join(args_out_path, "txt")
     os.makedirs(txt_save_path, exist_ok=True)
+
+    depth_diff_path = os.path.join(args_out_path, "depth_diff")
+    os.makedirs(depth_diff_path, exist_ok=True)
 
     model = WorDepth(pretrained=args.pretrain,
                        max_depth=args.max_depth,
@@ -196,6 +201,13 @@ def main():
         # Set the dpi of the figure to match the image resolution
         dpi = plt.rcParams['figure.dpi']
 
+        # Define the value range for your colormap
+        vmin, vmax = vis_gt_depth.min(), vis_gt_depth.max()  # Replace with your actual min and max values
+
+
+        # Create a Normalize object with your value range
+        norm = matplotlib.colors.Normalize(vmin=vmin, vmax=vmax)
+
         # Calculate the figsize to match the image resolution
         figsize = width / dpi, height / dpi
 
@@ -208,22 +220,24 @@ def main():
         fig_path = os.path.join(image_save_path, f'image_{idx + 1}.png')
         vis_image.save(fig_path)
 
-        ax.imshow(vis_gt_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
-        ax.axis('off')  # Disable axis
-        fig_path = os.path.join(depth_gt_save_path, f'depth_gt_{idx + 1}.png')
-        plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
-
         ax.imshow(vis_sample_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
         ax.axis('off')  # Disable axis
         fig_path = os.path.join(vis_sample_path, f'sample_depth_{idx + 1}.png')
         plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
 
-        cax = ax.imshow(vis_gt_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
-        fig.colorbar(cax, ax=ax)
+        depth_diff = abs(vis_depth - vis_gt_depth)
+        ax.imshow(depth_diff, cmap='viridis')  # Assuming depth map is a 2D numpy array
         ax.axis('off')  # Disable axis
-        fig_path = os.path.join(depth_gt_save_path_colorbar, f'depth_gt_color_bar_{idx + 1}.png')
+        fig_path = os.path.join(depth_diff_path, f'depth_diff_{idx + 1}.png')
         plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
 
+        im = ax.imshow(vis_gt_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
+        ax.axis('off')  # Disable axis
+        fig_path = os.path.join(depth_gt_save_path, f'depth_gt_{idx + 1}.png')
+        cbaxes = inset_axes(ax, width="3%", height="20%", loc='lower right', borderpad=2)
+        cbar = plt.colorbar(im, cax=cbaxes, orientation='vertical')
+        cbar.ax.tick_params(labelsize=5)
+        plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
 
         plt.close(fig)
 
