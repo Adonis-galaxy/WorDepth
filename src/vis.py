@@ -93,9 +93,11 @@ def main():
     os.makedirs(vis_sample_path, exist_ok=True)
 
     depth_gt_save_path = os.path.join(args_out_path, "depth_gt")
+    depth_gt_save_path_colorbar = os.path.join(args_out_path, "depth_gt_colorbar")
     image_save_path = os.path.join(args_out_path, "image")
     os.makedirs(depth_gt_save_path, exist_ok=True)
     os.makedirs(image_save_path, exist_ok=True)
+    os.makedirs(depth_gt_save_path_colorbar, exist_ok=True)
 
     txt_save_path = os.path.join(args_out_path, "txt")
     os.makedirs(txt_save_path, exist_ok=True)
@@ -215,6 +217,13 @@ def main():
         ax.axis('off')  # Disable axis
         fig_path = os.path.join(vis_sample_path, f'sample_depth_{idx + 1}.png')
         plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
+
+        cax = ax.imshow(vis_gt_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
+        fig.colorbar(cax, ax=ax)
+        ax.axis('off')  # Disable axis
+        fig_path = os.path.join(depth_gt_save_path_colorbar, f'depth_gt_color_bar_{idx + 1}.png')
+        plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
+
 
         plt.close(fig)
 
