@@ -218,10 +218,16 @@ def main():
 
         plt.close(fig)
 
-        # Move the txt to the destination directory
-        txt_path = os.path.join(txt_save_path, f'caption_{idx + 1}.txt')
-        source_path = args.data_path_eval+eval_sample_batched['sample_path'][i].split(' ')[0][:-4]+'.txt'
-        shutil.move(source_path, txt_path)
+        # # Move the txt to the destination directory
+        # txt_path = os.path.join(txt_save_path, f'caption_{idx + 1}.txt')
+        # source_path = args.data_path_eval+eval_sample_batched['sample_path'][i].split(' ')[0][:-4]+'.txt'
+        # shutil.copy(source_path, txt_save_path)
+
+        # # Get the filename without the path
+        # filename = os.path.basename(source_path)
+
+        # # Rename the copied file in the destination directory
+        # os.rename(os.path.join(txt_save_path, filename), txt_path)
 
         valid_mask = np.logical_and(gt_depth > args.min_depth_eval, gt_depth < args.max_depth_eval)
 

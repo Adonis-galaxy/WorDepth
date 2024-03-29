@@ -105,7 +105,7 @@ def online_eval(model, dataloader_eval, post_process=False):
             text_feature_list = torch.cat(text_feature_list, dim=0)
 
             # Forwarding Model
-            pred_depth = model(image, text_feature_list)
+            pred_depth = model(image, text_feature_list, sample_from_gaussian_eval=False)
 
             pred_depth = pred_depth.cpu().numpy().squeeze()
             gt_depth = gt_depth.cpu().numpy().squeeze()
@@ -304,7 +304,7 @@ def main_worker(args):
                             print('New best for {}. Saving model: {}'.format(eval_metrics[i], model_save_name))
                             checkpoint = {'global_step': global_step,
                                           'model': model.state_dict(),
-                                          'optimizer': optimizer.state_dict(),
+                                        #   'optimizer': optimizer.state_dict(),
                                           'best_eval_measures_higher_better': best_eval_measures_higher_better,
                                           'best_eval_measures_lower_better': best_eval_measures_lower_better,
                                           'best_eval_steps': best_eval_steps
