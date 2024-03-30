@@ -284,6 +284,9 @@ class WorDepth(nn.Module):
         if sample_from_gaussian is True:
             eps_img = torch.normal(mean=0, std=1, size=(B, hidden_dim, H, W)).to(x.device)
         else:
+            # Alter image branch, not updating text-VAE
+            mean_txt = mean_txt.detach()
+            std_txt = std_txt.detach()
             eps_img = self.eps_layer(x, mean_txt.clone().detach(), std_txt.clone().detach())  # ([B, 128, 30, 40])
         mean_txt_mul = F.interpolate(mean_txt.unsqueeze(-1).unsqueeze(-1), size=(H, W))  # B*128 -> B*128*30*40
         std_txt_mul = F.interpolate(std_txt.unsqueeze(-1).unsqueeze(-1), size=(H, W))  # B*128 -> B*128*30*40
