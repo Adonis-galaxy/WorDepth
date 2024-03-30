@@ -247,7 +247,7 @@ class WorDepth(nn.Module):
         self.weight_kld = weight_kld
         self.alter_prob = alter_prob
 
-    def forward(self, image, text_feature_list, depth_gt=None, sample_from_gaussian_eval=None):
+    def forward(self, image, text_feature_list, depth_gt=None, sample_from_gaussian=None):
         '''
         Forwards the inputs through the network
 
@@ -262,13 +262,12 @@ class WorDepth(nn.Module):
             depth_pred: torch.Tensor[float32]
                 N x 1 x Height (480 for nyu) x Width (640 for nyu)
         '''
-        if random.random()<self.alter_prob:
-            sample_from_gaussian = True
-        else:
-            sample_from_gaussian = False
-        # For vis gaussian
-        if sample_from_gaussian_eval is not None:
-            sample_from_gaussian = sample_from_gaussian_eval
+        if sample_from_gaussian is None:
+            if random.random()<self.alter_prob:
+                sample_from_gaussian = True
+            else:
+                sample_from_gaussian = False
+
         x2, x3, x4, x5 = self.backbone(image)
 
         metric = self.mlayer(x5)

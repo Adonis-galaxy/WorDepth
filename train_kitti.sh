@@ -1,4 +1,4 @@
-model_name="0329_final_ckpt_eval_con"
+model_name="0330_method_kitti_1_tmux3"
 
 mkdir ./models/${model_name}
-CUDA_VISIBLE_DEVICES=0 python src/train.py configs/arguments_train_kittieigen.txt  2>&1 | tee ./models/${model_name}/result.log
+CUDA_VISIBLE_DEVICES=3 python src/train.py configs/arguments_train_kittieigen.txt  2>&1 | tee ./models/${model_name}/result.log

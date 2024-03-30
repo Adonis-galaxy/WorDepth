@@ -1,5 +1,5 @@
 --mode train
---model_name 0328_vis_kitti_alter_001_final
+--model_name 0329_vis_kitti_sample
 --pretrain ./swin_large_patch4_window12_384_22k.pth
 --dataset kitti
 --data_path /media/staging1/zyzeng/kitti_raw_data/
@@ -31,4 +31,4 @@
 
 --weight_kld 1e-3
 --alter_prob 0
---checkpoint_path ./weights/kitti_ckpt
+--checkpoint_path /media/home/zyzeng/code/workspace/WorDepth_Swin/models/0326_0_alter_1_kitti_tmux3/model-90000-best_log_rms_0.27021

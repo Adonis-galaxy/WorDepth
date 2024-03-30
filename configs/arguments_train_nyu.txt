@@ -1,5 +1,5 @@
 --mode train
---model_name 0327_alter_01_con_nyu_tmux3
+--model_name 0330_method_nyu_1_tmux1
 --pretrain ./swin_large_patch4_window12_384_22k.pth
 --dataset nyu
 --data_path /media/staging1/zyzeng/nyu_depth_v2/sync/
@@ -30,5 +30,5 @@
 --eigen_crop
 
 --weight_kld 1e-3
---alter_prob 0.1
---checkpoint_path ./weights/nyu_ckpt
+--alter_prob 0.01
+--eval_before_train

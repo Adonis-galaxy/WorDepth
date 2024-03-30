@@ -104,7 +104,7 @@ def main():
     txt_save_path = os.path.join(args_out_path, "txt")
     os.makedirs(txt_save_path, exist_ok=True)
 
-    depth_diff_path = os.path.join(args_out_path, "depth_diff")
+    depth_diff_path = os.path.join(args_out_path, "error_map")
     os.makedirs(depth_diff_path, exist_ok=True)
 
     model = WorDepth(pretrained=args.pretrain,
@@ -190,11 +190,16 @@ def main():
             vis_sample_depth = sample_depth[45:472, 43:608]
             vis_image = ori_image.crop((43, 45, 608, 472))
             vis_gt_depth = gt_depth[45:472, 43:608]
+            vmin = 0
+            vmax = 8
         else:
             vis_depth = pred_depth
             vis_sample_depth = sample_depth
             vis_image = ori_image
             vis_gt_depth = gt_depth
+            vmin = 1.5
+            vmax = 70
+        valid_mask = np.logical_and(vis_gt_depth > args.min_depth_eval, vis_gt_depth < args.max_depth_eval)
 
         height, width = vis_image.height, vis_image.width
 
@@ -202,17 +207,19 @@ def main():
         dpi = plt.rcParams['figure.dpi']
 
         # Define the value range for your colormap
-        vmin, vmax = vis_gt_depth.min(), vis_gt_depth.max()  # Replace with your actual min and max values
+        # vmin, vmax = vis_gt_depth.min(), vis_gt_depth.max()  # Replace with your actual min and max values
+
 
 
         # Create a Normalize object with your value range
-        norm = matplotlib.colors.Normalize(vmin=vmin, vmax=vmax)
+        # norm = matplotlib.colors.Normalize(vmin=vmin, vmax=vmax)
 
         # Calculate the figsize to match the image resolution
         figsize = width / dpi, height / dpi
 
         fig, ax = plt.subplots(figsize=figsize)
-        ax.imshow(vis_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
+
+        ax.imshow(vis_depth, cmap='jet', vmin=vmin, vmax=vmax)  # Assuming depth map is a 2D numpy array
         ax.axis('off')  # Disable axis
         fig_path = os.path.join(vis_pred_path, f'pred_depth_{idx + 1}.png')
         plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
@@ -220,23 +227,30 @@ def main():
         fig_path = os.path.join(image_save_path, f'image_{idx + 1}.png')
         vis_image.save(fig_path)
 
-        ax.imshow(vis_sample_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
+        ax.imshow(vis_sample_depth, cmap='jet', vmin=vmin, vmax=vmax)  # Assuming depth map is a 2D numpy array
         ax.axis('off')  # Disable axis
         fig_path = os.path.join(vis_sample_path, f'sample_depth_{idx + 1}.png')
         plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
 
-        depth_diff = abs(vis_depth - vis_gt_depth)
-        ax.imshow(depth_diff, cmap='viridis')  # Assuming depth map is a 2D numpy array
+        # error map
+        error_depth = np.where(
+            vis_gt_depth > 0,
+            np.abs(vis_depth - vis_gt_depth) / vis_gt_depth,
+            0.0)
+
+        im = ax.imshow(error_depth, vmin=0.00, vmax=0.2, cmap='hot')
+        # plt.colorbar(im, orientation='vertical')
         ax.axis('off')  # Disable axis
-        fig_path = os.path.join(depth_diff_path, f'depth_diff_{idx + 1}.png')
+        fig_path = os.path.join(depth_diff_path, f'error_map_{idx + 1}.png')
         plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
 
-        im = ax.imshow(vis_gt_depth, cmap='viridis')  # Assuming depth map is a 2D numpy array
+        im = ax.imshow(vis_gt_depth, cmap='jet', vmin=vmin, vmax=vmax)  # Assuming depth map is a 2D numpy array
+        # plt.colorbar(im, orientation='vertical')
         ax.axis('off')  # Disable axis
         fig_path = os.path.join(depth_gt_save_path, f'depth_gt_{idx + 1}.png')
-        cbaxes = inset_axes(ax, width="3%", height="20%", loc='lower right', borderpad=2)
-        cbar = plt.colorbar(im, cax=cbaxes, orientation='vertical')
-        cbar.ax.tick_params(labelsize=5)
+        # cbaxes = inset_axes(ax, width="3%", height="20%", loc='lower right', borderpad=2)
+        # cbar = plt.colorbar(im, cax=cbaxes, orientation='vertical')
+        # cbar.ax.tick_params(labelsize=5)
         plt.savefig(fig_path, bbox_inches='tight', pad_inches=0)  # Save the figure without extra padding
 
         plt.close(fig)
