@@ -1,5 +1,5 @@
 --mode train
---model_name 0327_alter_001_con_kitti_tmux1
+--model_name 0330_method_kitti_1_tmux3
 --pretrain ./swin_large_patch4_window12_384_22k.pth
 --dataset kitti
 --data_path /media/staging1/zyzeng/kitti_raw_data/
@@ -31,4 +31,3 @@
 
 --weight_kld 1e-3
 --alter_prob 0.01
---checkpoint_path ./weights/kitti_ckpt

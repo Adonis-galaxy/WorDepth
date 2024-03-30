@@ -107,7 +107,7 @@ def online_eval(model, dataloader_eval, post_process=False):
             text_feature_list = torch.cat(text_feature_list, dim=0)
 
             # Forwarding Model
-            pred_depth = model(image, text_feature_list)
+            pred_depth = model(image, text_feature_list, sample_from_gaussian=False)
 
             pred_depth = pred_depth.cpu().numpy().squeeze()
             gt_depth = gt_depth.cpu().numpy().squeeze()
