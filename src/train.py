@@ -275,6 +275,12 @@ def main_worker(args):
                 summary_writer.add_scalar("training_loss", loss.item(), int(global_step))
                 print('epoch:', epoch, 'global_step:', global_step, 'loss:', loss.item(), flush=True)
 
+            if global_step % args.store_freq == 0:
+                checkpoint = {'global_step': global_step,
+                             'model': model.state_dict()}
+                model_save_name = '/model-{}'.format(global_step)
+                torch.save(checkpoint, args.log_directory + '/' + args.model_name + model_save_name)
+
             if args.do_online_eval and global_step and global_step % args.eval_freq == 0 and not model_just_loaded:
                 model.eval()
                 with torch.no_grad():
@@ -304,7 +310,7 @@ def main_worker(args):
                             print('New best for {}. Saving model: {}'.format(eval_metrics[i], model_save_name))
                             checkpoint = {'global_step': global_step,
                                           'model': model.state_dict(),
-                                          'optimizer': optimizer.state_dict(),
+                                        #   'optimizer': optimizer.state_dict(),
                                           'best_eval_measures_higher_better': best_eval_measures_higher_better,
                                           'best_eval_measures_lower_better': best_eval_measures_lower_better,
                                           'best_eval_steps': best_eval_steps
