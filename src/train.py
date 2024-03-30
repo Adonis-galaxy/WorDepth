@@ -65,6 +65,8 @@ parser.add_argument('--eval_summary_directory',    type=str,   help='output dire
 # WorDepth
 parser.add_argument('--weight_kld',            type=float, default=1e-3)
 parser.add_argument('--alter_prob',            type=float, default=0.1)
+parser.add_argument('--store_freq',            type=int, default=0)
+
 
 if sys.argv.__len__() == 2:
     arg_filename_with_prefix = '@' + sys.argv[1]
@@ -275,7 +277,7 @@ def main_worker(args):
                 summary_writer.add_scalar("training_loss", loss.item(), int(global_step))
                 print('epoch:', epoch, 'global_step:', global_step, 'loss:', loss.item(), flush=True)
 
-            if global_step % args.store_freq == 0:
+            if args.store_freq != 0 and global_step % args.store_freq == 0:
                 checkpoint = {'global_step': global_step,
                              'model': model.state_dict()}
                 model_save_name = '/model-{}'.format(global_step)
