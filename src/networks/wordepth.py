@@ -325,8 +325,10 @@ class WorDepth(nn.Module):
         d_u2 = F.interpolate(d_feat, scale_factor=4, mode='bilinear', align_corners=True)
 
         d_feat = d_u2 + d_u3 + d_u4
-
-        depth_pred = torch.sigmoid(metric[:, 0:1]) * (self.outc(d_feat) + torch.exp(metric[:, 1:2]))
+        if sample_from_gaussian is True:
+            depth_pred = self.outc(d_feat)
+        else:
+            depth_pred = torch.sigmoid(metric[:, 0:1]) * (self.outc(d_feat) + torch.exp(metric[:, 1:2]))
 
         if self.training:
             loss = self.si_loss(depth_pred, depth_gt) + self.weight_kld * kld_image_eps_loss + self.weight_kld * kld_text_mean_std_loss
