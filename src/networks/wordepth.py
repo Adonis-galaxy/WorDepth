@@ -263,7 +263,7 @@ class WorDepth(nn.Module):
                 N x 1 x Height (480 for nyu) x Width (640 for nyu)
         '''
         if sample_from_gaussian is None:
-            if random.random()<self.alter_prob:
+            if random.random() < self.alter_prob:
                 sample_from_gaussian = True
             else:
                 sample_from_gaussian = False
@@ -330,6 +330,7 @@ class WorDepth(nn.Module):
         d_u2 = F.interpolate(d_feat, scale_factor=4, mode='bilinear', align_corners=True)
 
         d_feat = d_u2 + d_u3 + d_u4
+
         if sample_from_gaussian is True:
             depth_pred = self.outc(d_feat)
         else:

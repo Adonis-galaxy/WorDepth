@@ -1,5 +1,5 @@
 --mode train
---model_name 0330_method_nyu_1_tmux1
+--model_name nyu_train
 --pretrain ./swin_large_patch4_window12_384_22k.pth
 --dataset nyu
 --data_path /media/staging1/zyzeng/nyu_depth_v2/sync/
