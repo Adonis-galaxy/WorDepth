@@ -1,0 +1,1 @@
+A store with a group of items on the counter.

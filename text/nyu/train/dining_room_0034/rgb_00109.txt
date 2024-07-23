@@ -1,0 +1,1 @@
+A counter with candles on top of a window.

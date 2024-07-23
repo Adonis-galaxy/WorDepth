@@ -1,0 +1,1 @@
+A counter with a counter top and a sign on it.

@@ -1,0 +1,1 @@
+A counter with drinks and a counter in a restaurant.

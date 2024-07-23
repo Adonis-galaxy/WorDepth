@@ -1,0 +1,1 @@
+A restaurant with a counter and a table.

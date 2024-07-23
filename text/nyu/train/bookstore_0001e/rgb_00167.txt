@@ -1,0 +1,1 @@
+A store with a bunch of bottles in it.

@@ -1,0 +1,1 @@
+A window with a table in front of a window.

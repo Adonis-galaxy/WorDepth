@@ -1,0 +1,1 @@
+A counter with a bunch of food in a store.

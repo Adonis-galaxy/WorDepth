@@ -309,10 +309,12 @@ class WorDepth(nn.Module):
         d_feat = mean_txt_mul + std_txt_mul * eps_img  # B*128*30*40, upsample to be the depth feature
         #
         # Upsampling depth feature, get rid of visual signal when sample eps from Gaussian
-        if sample_from_gaussian is True:
+        # if sample_from_gaussian is True:
+        if True:  # remove all skip connection
             x = torch.zeros_like(x)
             x3 = torch.zeros_like(x3)
             x2 = torch.zeros_like(x2)
+
         x, d_feat  = self.ref_4(x, d_feat)
 
         d_u4 = F.interpolate(d_feat, scale_factor=16, mode='bilinear', align_corners=True)

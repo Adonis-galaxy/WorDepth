@@ -1,12 +1,12 @@
 --mode train
---model_name kitti_train
+--model_name 0717_noskip_kitti_train_prob09_e200_tmux1
 --pretrain ./swin_large_patch4_window12_384_22k.pth
 --dataset kitti
 --data_path /media/staging1/zyzeng/kitti_raw_data/
 --gt_path /media/staging1/zyzeng/ground_truth/
 --filenames_file data_splits/eigen_train_files_with_gt.txt
 --batch_size 3
---num_epochs 50
+--num_epochs 200
 --learning_rate 3e-5
 --end_learning_rate 1e-5
 --weight_decay 0.0
@@ -30,5 +30,4 @@
 --garg_crop
 
 --weight_kld 1e-3
---alter_prob 0.01
---eval_before_train
+--alter_prob 0.9

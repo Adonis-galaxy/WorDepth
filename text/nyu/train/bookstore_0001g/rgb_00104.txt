@@ -1,0 +1,1 @@
+A store with shelves of books on the floor.

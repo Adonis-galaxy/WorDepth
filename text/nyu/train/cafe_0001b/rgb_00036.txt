@@ -1,0 +1,1 @@
+A bar with a counter with a display of drinks.

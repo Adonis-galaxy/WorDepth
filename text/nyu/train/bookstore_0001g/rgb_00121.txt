@@ -1,0 +1,1 @@
+A store with books on the shelves in it.

@@ -1,0 +1,1 @@
+A store with a bunch of books in it.

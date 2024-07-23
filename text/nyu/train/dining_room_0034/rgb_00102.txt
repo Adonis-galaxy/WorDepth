@@ -1,0 +1,1 @@
+A counter with candles and a window.
