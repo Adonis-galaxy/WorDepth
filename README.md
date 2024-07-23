@@ -1,5 +1,5 @@
 ## Coming Soon...... ##
-Checkpoints, setup for CLIP and Image Captioner, code refactory
+Checkpoints, code refactory, updated readme
 
 ## Setup Environment ##
 Create Virtual Environment:
