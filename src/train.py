@@ -77,6 +77,8 @@ else:
 if args.dataset == 'kitti' or args.dataset == 'nyu':
     from dataloaders.dataloader import NewDataLoader
 
+if not os.path.exists("./models/"):
+    os.makedirs("./models/")
 
 def online_eval(model, dataloader_eval, post_process=False):
     eval_measures = torch.zeros(10).cuda()
