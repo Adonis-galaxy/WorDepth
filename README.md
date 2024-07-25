@@ -1,5 +1,12 @@
 ## Coming Soon...... ##
 Checkpoints, code refactory, updated readme
+Accepted by CVPR 2024
+
+Paper Link: https://arxiv.org/abs/2404.03635
+
+Presentation Video (5min): https://www.youtube.com/watch?v=QNwOFZZc8XI
+
+Authors: Ziyao Zeng, Daniel Wang, Fengyu Yang, Hyoungseob Park, Yangchao Wu, Stefano Soatto, Byung-Woo Hong, Dong Lao, Alex Wong
 
 ## Setup Environment ##
 Create Virtual Environment:
@@ -27,6 +34,9 @@ wget https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_la
 ```
 
 For simplicity, we have extracted image caption using [ExpansionNet v2](https://github.com/jchenghu/ExpansionNet_v2) in "./text" and extracted their CLIP text features in "./text_feat". While running, the model will automatically load text features.
+
+## Setup Datasets ##
+
 ## Run NYU-Depth-V2 ##
 Specify GPU Number train_nyu.sh, then run by:
 ```
@@ -39,3 +49,11 @@ Specify GPU Number train_kitti.sh, then run by:
 sh train_kitti.sh
 ```
 Before running new experiments, remember to change the model_name in train_kitti.sh and config/arguments_train_kitti.txt to be the same.
+
+## Acknowledgements ##
+We would like to acknowledge the use of code snippets from various open-source libraries and contributions from the online coding community, which have been invaluable in the development of this project. Specifically, we would like to thank the authors and maintainers of the following resources:
+
+[CLIP](https://github.com/openai/CLIP)
+[Swin Transformer](https://github.com/microsoft/Swin-Transformer)
+[ExpansionNet v2](https://github.com/jchenghu/ExpansionNet_v2)
+[VA-DepthNet](https://github.com/cnexah/VA-DepthNet)
