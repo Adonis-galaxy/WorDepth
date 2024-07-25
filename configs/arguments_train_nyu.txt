@@ -1,5 +1,5 @@
 --mode train
---model_name 0717_noskip_nyu_train_prob09_e200_tmux0
+--model_name 0723_noskip_nyu_train_prob05_e200_tmux2
 --pretrain ./swin_large_patch4_window12_384_22k.pth
 --dataset nyu
 --data_path /media/staging1/zyzeng/nyu_depth_v2/sync/

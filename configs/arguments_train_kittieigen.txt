@@ -1,5 +1,5 @@
 --mode train
---model_name 0717_noskip_kitti_train_prob09_e200_tmux1
+--model_name 0725_noskip_kitti_train_prob05_e200_tmux3
 --pretrain ./swin_large_patch4_window12_384_22k.pth
 --dataset kitti
 --data_path /media/staging1/zyzeng/kitti_raw_data/

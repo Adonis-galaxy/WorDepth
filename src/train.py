@@ -96,10 +96,11 @@ def online_eval(model, dataloader_eval, post_process=False):
                 # TODO: This is data loading and should be in the dataloader so we can
                 # make use of multithreading
                 if args.dataset == "nyu":
-                    text_feature_path = args.data_path_eval+eval_sample_batched['sample_path'][i].split(' ')[0][:-4]+'.pt'
+                    text_feature_path = "./text_feat/nyu/test/" + \
+                        eval_sample_batched['sample_path'][i].split(' ')[0][:-4]+'.pt'
                 elif args.dataset == "kitti":
-                    text_feature_path = args.data_path_eval + \
-                        eval_sample_batched['sample_path'][i].split(' ')[0][:-4]+'_txt_feat.pt'
+                    text_feature_path = "./text_feat/kitti/test/" + \
+                        eval_sample_batched['sample_path'][i].split(' ')[0][:-4]+'.pt'
 
                 text_feature = torch.load(text_feature_path, map_location=image.device)
                 text_feature_list.append(text_feature)
@@ -252,10 +253,11 @@ def main_worker(args):
             text_feature_list = []
             for i in range(len(sample_batched['sample_path'])):
                 if args.dataset == "nyu":
-                    text_feature_path = args.data_path+sample_batched['sample_path'][i].split(' ')[0][:-4]+'.pt'
+                    text_feature_path = "./text_feat/nyu/train/" + \
+                        sample_batched['sample_path'][i].split(' ')[0][:-4]+'.pt'
                 elif args.dataset == "kitti":
-                    text_feature_path = args.data_path + \
-                        sample_batched['sample_path'][i].split(' ')[0][:-4]+'_txt_feat.pt'
+                    text_feature_path = "./text_feat/kitti/train/" + \
+                        sample_batched['sample_path'][i].split(' ')[0][:-4]+'.pt'
 
                 text_feature = torch.load(text_feature_path, map_location=image.device)
                 text_feature_list.append(text_feature)
