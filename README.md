@@ -64,6 +64,23 @@ wget https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_la
 For simplicity, we have extracted image caption using [ExpansionNet v2](https://github.com/jchenghu/ExpansionNet_v2) in "./text" and extracted their CLIP text features in "./text_feat". While running, the model will automatically load text features.
 
 ## Setup Datasets ##
+### Prepare Datasets ###
+Download [NYU-Depth-v2](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html) and [KITTI](https://www.cvlibs.net/datasets/kitti/)
+
+Then change the data_path and gt_path in configs.
+
+The structure of dataset should look like this:
+
+    ├── my-subdir                     # path to where all datasets
+    │   ├── my-dataset                # name of dataset
+    │   │   ├── metadata.json         # dataset metadata (optional, only for listed)
+    │   │   ├── documents             # datasets documents
+    │   │   │   ├── file1.parquet
+    │   │   │   └── file2.parquet
+    │   │   ├── queries               # dataset queries
+    │   │   │   ├── file1.parquet
+    │   │   │   └── file2.parquet
+    └── ...
 
 ### Run NYU-Depth-v2 ###
 Specify GPU Number train_nyu.sh, then run by:
@@ -89,6 +106,8 @@ We would like to acknowledge the use of code snippets from various open-source l
 [ExpansionNet v2](https://github.com/jchenghu/ExpansionNet_v2)
 
 [VA-DepthNet](https://github.com/cnexah/VA-DepthNet)
+
+[KBNet](https://github.com/alexklwong/calibrated-backprojection-network)
 
 ## TODO: ##
 Checkpoints
