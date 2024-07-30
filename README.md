@@ -70,17 +70,34 @@ Download [NYU-Depth-v2](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html) a
 Then change the data_path and gt_path in configs.
 
 The structure of dataset should look like this:
-
-    ├── my-subdir                     # path to where all datasets
-    │   ├── my-dataset                # name of dataset
-    │   │   ├── metadata.json         # dataset metadata (optional, only for listed)
-    │   │   ├── documents             # datasets documents
-    │   │   │   ├── file1.parquet
-    │   │   │   └── file2.parquet
-    │   │   ├── queries               # dataset queries
-    │   │   │   ├── file1.parquet
-    │   │   │   └── file2.parquet
+    ├── nyu_depth_v2                     # path to nyu-depth-v2 data_path and gt_path
+    │   ├── official_splits
+    │   │   ├── test
+    │   │   │   ├── bathroom
+    │   │   │   │   ├── rgb_00045.jpg
+    │   │   │   │   ├── rgb_00046.jpg
+    │   │   │   │   ├── ...
+    │   │   ├── train                    # We don't use this part
+    │   │   │   ├── ...
+    │   ├── sync
+    │   │   ├── basement_0001a
+    │   │   │   ├── rgb_00000.jpg
+    │   │   │   ├── rgb_00001.jpg
+    │   │   │   ├── ...
     └── ...
+
+    ├── kitti_raw_data                     # path to kitti data_path
+    │   ├── 2011_09_26                     # name of dataset
+    │   │   ├── 2011_09_26_drive_0001_sync
+    │   │   │   ├── ...
+    └── ...
+
+
+    ├── kitti_ground_truth                 # path to kitti gt_path
+    │   ├── 2011_09_26_drive_0001_sync
+    │   │   ├── ...
+    └── ...
+
 
 ### Run NYU-Depth-v2 ###
 Specify GPU Number train_nyu.sh, then run by:
