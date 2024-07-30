@@ -10,6 +10,15 @@ Presentation Video (5min): https://www.youtube.com/watch?v=QNwOFZZc8XI
 
 Authors: Ziyao Zeng, Daniel Wang, Fengyu Yang, Hyoungseob Park, Yangchao Wu, Stefano Soatto, Byung-Woo Hong, Dong Lao, Alex Wong
 
+## Overview ##
+
+![teaser](figuers/teaser.png)
+
+![pipeline](figuers/pipeline.png)
+
+![vis_nyu](figuers/vis_nyu.png)
+
+![poster](figuers/poster.pdf)
 ## Setup Environment ##
 Create Virtual Environment:
 ```
