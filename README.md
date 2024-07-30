@@ -19,7 +19,7 @@ This raises the question: Can two inherently ambiguous modalities, single images
 
 When people are informed "this is a toy car," they immediately gain prior knowledge about the object's size. Combined with observations, this knowledge can help narrow down the solution space for depth estimation. Our key idea is to use language as a variational prior to ground depth into a metric scale.
 
-<img src="figures/teaser.png" alt="teaser" width="500"/>
+<img src="figures/teaser.png" alt="teaser" width="700"/>
 
 ### Pipeline ###
 We train a text-VAE to encode text into the mean and standard deviation parameterizing the distribution of 3D scenes for a description.
