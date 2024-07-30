@@ -12,7 +12,7 @@ Authors: Ziyao Zeng, Daniel Wang, Fengyu Yang, Hyoungseob Park, Yangchao Wu, Ste
 
 ## Overview ##
 
-![teaser](figures/teaser.png)
+<img src="figures/teaser.png" alt="teaser" width="500"/>
 
 ### Pipeline ###
 ![pipeline](figures/pipeline.png)
