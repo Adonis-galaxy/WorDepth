@@ -1,4 +1,4 @@
-# WorDepth: Variational Language Prior for Monocular Depth Estimation
+# WorDepth: Variational Language Prior for Monocular Depth Estimation #
 
 Official implementation of the paper "WorDepth: Variational Language Prior for Monocular Depth Estimation"
 
@@ -14,11 +14,14 @@ Authors: Ziyao Zeng, Daniel Wang, Fengyu Yang, Hyoungseob Park, Yangchao Wu, Ste
 
 ![teaser](figures/teaser.png)
 
+### Pipeline ###
 ![pipeline](figures/pipeline.png)
 
+### Visualization on NYU-Depth-v2 ###
 ![vis_nyu](figures/vis_nyu.png)
 
-![poster](figures/poster.pdf)
+### Poster ###
+![poster](figures/poster.png)
 ## Setup Environment ##
 Create Virtual Environment:
 ```
@@ -48,7 +51,7 @@ For simplicity, we have extracted image caption using [ExpansionNet v2](https://
 
 ## Setup Datasets ##
 
-### Run NYU-Depth-V2 ###
+### Run NYU-Depth-v2 ###
 Specify GPU Number train_nyu.sh, then run by:
 ```
 sh train_nyu.sh
