@@ -12,13 +12,13 @@ Authors: Ziyao Zeng, Daniel Wang, Fengyu Yang, Hyoungseob Park, Yangchao Wu, Ste
 
 ## Overview ##
 
-![teaser](figuers/teaser.png)
+![teaser](figures/teaser.png)
 
-![pipeline](figuers/pipeline.png)
+![pipeline](figures/pipeline.png)
 
-![vis_nyu](figuers/vis_nyu.png)
+![vis_nyu](figures/vis_nyu.png)
 
-![poster](figuers/poster.pdf)
+![poster](figures/poster.pdf)
 ## Setup Environment ##
 Create Virtual Environment:
 ```
