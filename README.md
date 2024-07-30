@@ -70,6 +70,7 @@ Download [NYU-Depth-v2](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html) a
 Then change the data_path and gt_path in configs.
 
 The structure of dataset should look like this:
+
     ├── nyu_depth_v2                     # path to nyu-depth-v2 data_path and gt_path
     │   ├── official_splits
     │   │   ├── test
