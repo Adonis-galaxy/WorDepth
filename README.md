@@ -83,13 +83,16 @@ Before running new experiments, remember to change the model_name in train_kitti
 We would like to acknowledge the use of code snippets from various open-source libraries and contributions from the online coding community, which have been invaluable in the development of this project. Specifically, we would like to thank the authors and maintainers of the following resources:
 
 [CLIP](https://github.com/openai/CLIP)
+
 [Swin Transformer](https://github.com/microsoft/Swin-Transformer)
+
 [ExpansionNet v2](https://github.com/jchenghu/ExpansionNet_v2)
+
 [VA-DepthNet](https://github.com/cnexah/VA-DepthNet)
 
 ## TODO: ##
 Checkpoints
 
-code refactory
+eval code and script
 
-updated readme
+code refactory and cleaning
