@@ -1,5 +1,7 @@
-## Coming Soon...... ##
-Checkpoints, code refactory, updated readme
+# WorDepth: Variational Language Prior for Monocular Depth Estimation
+
+Official implementation of the paper "WorDepth: Variational Language Prior for Monocular Depth Estimation"
+
 Accepted by CVPR 2024
 
 Paper Link: https://arxiv.org/abs/2404.03635
@@ -37,13 +39,14 @@ For simplicity, we have extracted image caption using [ExpansionNet v2](https://
 
 ## Setup Datasets ##
 
-## Run NYU-Depth-V2 ##
+### Run NYU-Depth-V2 ###
 Specify GPU Number train_nyu.sh, then run by:
 ```
 sh train_nyu.sh
 ```
 Before running new experiments, remember to change the model_name in train_nyu.sh and config/arguments_train_nyu.txt to be the same.
-## Run KITTI ##
+
+### Run KITTI ###
 Specify GPU Number train_kitti.sh, then run by:
 ```
 sh train_kitti.sh
@@ -57,3 +60,10 @@ We would like to acknowledge the use of code snippets from various open-source l
 [Swin Transformer](https://github.com/microsoft/Swin-Transformer)
 [ExpansionNet v2](https://github.com/jchenghu/ExpansionNet_v2)
 [VA-DepthNet](https://github.com/cnexah/VA-DepthNet)
+
+## TODO: ##
+Checkpoints
+
+code refactory
+
+updated readme
