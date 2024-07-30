@@ -11,22 +11,22 @@ Presentation Video (5min): https://www.youtube.com/watch?v=QNwOFZZc8XI
 Authors: Ziyao Zeng, Daniel Wang, Fengyu Yang, Hyoungseob Park, Yangchao Wu, Stefano Soatto, Byung-Woo Hong, Dong Lao, Alex Wong
 
 ## Overview ##
-3D reconstruction from a single image is an ill-posed problem, since there exists infinitely many 3D scenes, with different scales, that can generate an image. For example,  one bed can be smaller and put closer, or can be bigger and put further. They look the same in the same image by projection.
+3D reconstruction from a single image is an ill-posed problem because infinitely many 3D scenes with different scales can generate the same image. For instance, a small toy car placed closer or a large car placed further away can appear identical in the same image due to projection.
 
-Also, 3D reconstruction from a text caption is also an ill-posed problem, since there exists infinitely many 3D scenes that fits a description. For example, for “a bedroom with a stand and a bed”, the stand and the bed can be anywhere in the bedroom.
+Similarly, 3D reconstruction from a text caption is also an ill-posed problem. Infinite 3D scenes can fit a given description. For example, in "a bedroom with a stand and a bed," the stand and bed can be positioned anywhere within the room.
 
-So here comes the question: Can two modalities that are inherently ambiguous, single image and text caption, resolve one another’s ambiguity in 3D reconstruction?
+This raises the question: Can two inherently ambiguous modalities, single images and text captions, resolve each other's ambiguity in 3D reconstruction?
 
-And our Key idea is Using language to ground depth estimates to metric scale!
-We do so simply by letting the model know what objects are around and it can better estimate scale.
+When people are informed "this is a toy car," they immediately gain prior knowledge about the object's size. Combined with observations, this knowledge can help narrow down the solution space for depth estimation. Our key idea is to use language as a variational prior to ground depth into a metric scale.
 
 <img src="figures/teaser.png" alt="teaser" width="500"/>
 
 ### Pipeline ###
 We train a text-VAE to encode text into the mean and standard deviation parameterizing the distribution of 3D scenes for a description.
+
 For one text caption, we encode the mean and standard deviation, then sample a feature from the Gaussian with such mean and standard deviation to generate a depth map that aligned with such a description.
 
-Then, in inference, we choose one of the infinitely many scenes matching the description that is compatible with the observed image using a Conditional Sampler. We do so by predict epsilon tilt in the reparameterizaion step instead of sampling it from a standard Gaussian. And we alternatively optimize the text-VAE and the Conditional Sampler with a ratio p.
+Then, in inference, we choose one of the infinitely many scenes matching the description that is compatible with the observed image using a Conditional Sampler. We do so by predict epsilon tilt in the reparameterizaion step instead of sampling it from a standard Gaussian. And we alternatively optimize the text-VAE and the Conditional Sampler with a ratio *p*.
 ![pipeline](figures/pipeline.png)
 
 ### Visualization on NYU-Depth-v2 ###
