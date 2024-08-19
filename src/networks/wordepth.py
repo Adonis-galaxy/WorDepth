@@ -181,7 +181,7 @@ class Text_Encoder(nn.Module):
         return mean, std, logvar
 
 class WorDepth(nn.Module):
-    def __init__(self, pretrained=None, max_depth=10.0, prior_mean=1.54, si_lambda=0.85, img_size=(480, 640), weight_kld=1e-3, alter_prob=0.1):
+    def __init__(self, pretrained=None, max_depth=10.0, prior_mean=1.54, si_lambda=0.85, img_size=(480, 640), weight_kld=1e-3, alter_prob=0.1, legacy=False):
         '''
         WorDepth Model Network class
 
@@ -246,6 +246,7 @@ class WorDepth(nn.Module):
         self.text_encoder = Text_Encoder(hidden_dim=128)
         self.weight_kld = weight_kld
         self.alter_prob = alter_prob
+        self.legacy = legacy
 
     def forward(self, image, text_feature_list, depth_gt=None, sample_from_gaussian=None):
         '''
@@ -310,7 +311,7 @@ class WorDepth(nn.Module):
         #
         # Upsampling depth feature, get rid of visual signal when sample eps from Gaussian
         # if sample_from_gaussian is True:
-        if True:  # remove all skip connection
+        if self.legacy is not True:  # remove all skip connection
             x = torch.zeros_like(x)
             x3 = torch.zeros_like(x3)
             x2 = torch.zeros_like(x2)

@@ -1,12 +1,12 @@
 --mode train
---model_name 0723_noskip_nyu_train_prob05_e200_tmux2
+--model_name nyu_train
 --pretrain ./swin_large_patch4_window12_384_22k.pth
 --dataset nyu
 --data_path /media/staging1/zyzeng/nyu_depth_v2/sync/
 --gt_path /media/staging1/zyzeng/nyu_depth_v2/sync/
 --filenames_file ./data_splits/nyudepthv2_train_files_with_gt.txt
 --batch_size 4
---num_epochs 200
+--num_epochs 50
 --learning_rate 3e-5
 --end_learning_rate 1e-5
 --weight_decay 0.0
@@ -30,4 +30,4 @@
 --eigen_crop
 
 --weight_kld 1e-3
---alter_prob 0.9
+--alter_prob 0.5

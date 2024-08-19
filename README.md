@@ -100,19 +100,32 @@ The structure of dataset should look like this:
     └── ...
 
 
-### Run NYU-Depth-v2 ###
-Specify GPU Number train_nyu.sh, then run by:
+### Train NYU-Depth-v2 or KITTI ###
+Specify GPU Number run_kitti.sh or run_nyu.sh, then run by:
 ```
-sh train_nyu.sh
+sh run_kitti.sh
 ```
-Before running new experiments, remember to change the model_name in train_nyu.sh and config/arguments_train_nyu.txt to be the same.
+or
+```
+sh run_nyu.sh
+```
+Before running new experiments, if you change the model_name, remember to maintain the model_name in train_nyu.sh and config/arguments_train_nyu.txt to be the same.
 
-### Run KITTI ###
-Specify GPU Number train_kitti.sh, then run by:
+### Eval NYU-Depth-v2 or KITTI ###
+After our paper was accepted, we discovered that by removing the skip connections in the U-Net architecture and setting alternating probablity to 0.5, the model achieved better prior depth map generation while maintaining comparable performance in Monocular Depth Estimation. The underlying intuition is that removing the skip connections forces the model to extract all essential image features within the latent space. Consequently, by alternatively sampling latent features from a Gaussian distribution, we can better enforce the prior in the latent space for the final depth prediction. We have provided both our lagacy model, as described in the paper, and our latest models trained without skip connections.
+
+Model Checkpoints:
+
+
+Add those flag to the arguments before running to do evaluation:
 ```
-sh train_kitti.sh
+--eval_only
+--checkpoint_path "path to the checkpoints"
 ```
-Before running new experiments, remember to change the model_name in train_kitti.sh and config/arguments_train_kitti.txt to be the same.
+if you specify _lagacy checkpoints, you need also add:
+```
+--lagacy
+```
 
 ## Acknowledgements ##
 We would like to acknowledge the use of code snippets from various open-source libraries and contributions from the online coding community, which have been invaluable in the development of this project. Specifically, we would like to thank the authors and maintainers of the following resources:
@@ -126,10 +139,3 @@ We would like to acknowledge the use of code snippets from various open-source l
 [VA-DepthNet](https://github.com/cnexah/VA-DepthNet)
 
 [KBNet](https://github.com/alexklwong/calibrated-backprojection-network)
-
-## TODO: ##
-Checkpoints
-
-eval code and script
-
-code refactory and cleaning

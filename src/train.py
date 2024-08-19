@@ -62,10 +62,13 @@ parser.add_argument('--garg_crop',                             help='if set, cro
 parser.add_argument('--eval_freq',                 type=int,   help='Online evaluation frequency in global steps', default=500)
 parser.add_argument('--eval_summary_directory',    type=str,   help='output directory for eval summary,'
                                                                     'if empty outputs to checkpoint folder', default='')
+
+parser.add_argument('--eval_only',         action='store_true')
 # WorDepth
 parser.add_argument('--weight_kld',            type=float, default=1e-3)
-parser.add_argument('--alter_prob',            type=float, default=0.1)
+parser.add_argument('--alter_prob',            type=float, default=0.5)
 parser.add_argument('--store_freq',            type=int, default=0)
+parser.add_argument('--legacy',             action='store_true', help='keep skip connection in the UNet')
 
 
 if sys.argv.__len__() == 2:
@@ -170,7 +173,8 @@ def main_worker(args):
                        prior_mean=args.prior_mean,
                        img_size=(args.input_height, args.input_width),
                        weight_kld=args.weight_kld,
-                       alter_prob=args.alter_prob)
+                       alter_prob=args.alter_prob,
+                       legacy=args.legacy)
     model.train()
 
     num_params = sum([np.prod(p.size()) for p in model.parameters()])
@@ -210,8 +214,10 @@ def main_worker(args):
                     best_eval_steps = checkpoint['best_eval_steps']
                 except KeyError:
                     print("Could not load values for online evaluation")
-
-            print("== Loaded checkpoint '{}' (global_step {})".format(args.checkpoint_path, checkpoint['global_step']))
+            try:
+                print("== Loaded checkpoint '{}' (global_step {})".format(args.checkpoint_path, checkpoint['global_step']))
+            except:
+                print("== Loaded checkpoint '{}'~".format(args.checkpoint_path))
         else:
             print("== No checkpoint found at '{}'".format(args.checkpoint_path))
         model_just_loaded = True
@@ -223,10 +229,12 @@ def main_worker(args):
     dataloader_eval = NewDataLoader(args, 'online_eval')
 
     # ===== Evaluation before training ======
-    if args.eval_before_train is True:
+    if args.eval_before_train is True or args.eval_only is True:
         model.eval()
         with torch.no_grad():
             eval_measures = online_eval(model, dataloader_eval, post_process=True)
+        if args.eval_only is True:
+            exit()
         model.train()
     # Logging
     if args.do_online_eval:
