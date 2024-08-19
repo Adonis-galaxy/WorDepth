@@ -121,10 +121,11 @@ Add those flag to the arguments before running to do evaluation:
 --eval_only
 --checkpoint_path "path to the checkpoints"
 ```
-if you specify _lagacy checkpoints, you need also add:
+if you are evaluating lagacy checkpoints, you need also add:
 ```
 --lagacy
 ```
+to enable the skip-connection in the U-Net.
 
 ## Acknowledgements ##
 We would like to acknowledge the use of code snippets from various open-source libraries and contributions from the online coding community, which have been invaluable in the development of this project. Specifically, we would like to thank the authors and maintainers of the following resources:
