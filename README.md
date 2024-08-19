@@ -114,8 +114,7 @@ Before running new experiments, if you change the model_name, remember to mainta
 ### Eval NYU-Depth-v2 or KITTI ###
 After our paper was accepted, we discovered that by removing the skip connections in the U-Net architecture and setting alternating probablity to 0.5, the model achieved better prior depth map generation while maintaining comparable performance in Monocular Depth Estimation. The underlying intuition is that removing the skip connections forces the model to extract all essential image features within the latent space. Consequently, by alternatively sampling latent features from a Gaussian distribution, we can better enforce the prior in the latent space for the final depth prediction. We have provided both our lagacy model, as described in the paper, and our latest models trained without skip connections.
 
-Model Checkpoints:
-
+[Model Checkpoints](https://yaleedu-my.sharepoint.com/:f:/g/personal/ziyao_zeng_yale_edu/Ekk9W3E1q7xBs6KwQcsnpa0B9Ac0QuhklMKa-PURucvwYg?e=ScKwas)
 
 Add those flag to the arguments before running to do evaluation:
 ```
