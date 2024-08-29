@@ -1,13 +1,10 @@
 import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
-
 import numpy as np
 from PIL import Image
 import os
 import random
-
-from utils import DistributedSamplerNoEvenlyDivisible
 
 
 def _is_pil_image(img):

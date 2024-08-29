@@ -1,5 +1,5 @@
 import torch
-import os, sys, time
+import os, sys
 import argparse
 import numpy as np
 from tqdm import tqdm
@@ -10,9 +10,11 @@ from networks.wordepth import WorDepth
 parser = argparse.ArgumentParser(description='WorDepth PyTorch implementation.', fromfile_prefix_chars='@')
 parser.convert_arg_line_to_args = convert_arg_line_to_args
 
+# Overall
 parser.add_argument('--mode',                      type=str,   help='train or test', default='train')
 parser.add_argument('--model_name',                type=str,   help='model name', default='WorDepth')
 parser.add_argument('--pretrain',                  type=str,   help='path of pretrained encoder', default=None)
+parser.add_argument('--eval_only',         action='store_true')
 
 # Dataset
 parser.add_argument('--dataset',                   type=str,   help='dataset to train on, kitti or nyu', default='nyu')
@@ -63,7 +65,7 @@ parser.add_argument('--eval_freq',                 type=int,   help='Online eval
 parser.add_argument('--eval_summary_directory',    type=str,   help='output directory for eval summary,'
                                                                     'if empty outputs to checkpoint folder', default='')
 
-parser.add_argument('--eval_only',         action='store_true')
+
 # WorDepth
 parser.add_argument('--weight_kld',            type=float, default=1e-3)
 parser.add_argument('--alter_prob',            type=float, default=0.5)
@@ -91,15 +93,12 @@ def online_eval(model, dataloader_eval, post_process=False):
             gt_depth = eval_sample_batched['depth']
             has_valid_depth = eval_sample_batched['has_valid_depth']
             if not has_valid_depth:
-                # print('Invalid depth. continue.')
+                print('Invalid depth. continue.')
                 continue
 
             # Read Text and Image Feature
             text_feature_list = []
             for i in range(len(eval_sample_batched['sample_path'])):
-
-                # TODO: This is data loading and should be in the dataloader so we can
-                # make use of multithreading
                 if args.dataset == "nyu":
                     text_feature_path = "./text_feat/nyu/test/" + \
                         eval_sample_batched['sample_path'][i].split(' ')[0][:-4]+'.pt'
@@ -166,7 +165,6 @@ def online_eval(model, dataloader_eval, post_process=False):
     return eval_measures_cpu
 
 
-
 def main_worker(args):
     model = WorDepth(pretrained=args.pretrain,
                        max_depth=args.max_depth,
@@ -216,7 +214,7 @@ def main_worker(args):
                     print("Could not load values for online evaluation")
             try:
                 print("== Loaded checkpoint '{}' (global_step {})".format(args.checkpoint_path, checkpoint['global_step']))
-            except:
+            except Exception:
                 print("== Loaded checkpoint '{}'~".format(args.checkpoint_path))
         else:
             print("== No checkpoint found at '{}'".format(args.checkpoint_path))
@@ -254,8 +252,6 @@ def main_worker(args):
 
         for step, sample_batched in enumerate(dataloader.data):
             optimizer.zero_grad()
-            before_op_time = time.time()
-
             image = sample_batched['image'].cuda(non_blocking=True)
             depth_gt = sample_batched['depth'].cuda(non_blocking=True)
 
@@ -324,7 +320,7 @@ def main_worker(args):
                             print('New best for {}. Saving model: {}'.format(eval_metrics[i], model_save_name))
                             checkpoint = {'global_step': global_step,
                                           'model': model.state_dict(),
-                                        #   'optimizer': optimizer.state_dict(),
+                                        #   'optimizer': optimizer.state_dict(), # be careful, save this is quite large
                                           'best_eval_measures_higher_better': best_eval_measures_higher_better,
                                           'best_eval_measures_lower_better': best_eval_measures_lower_better,
                                           'best_eval_steps': best_eval_steps
@@ -339,7 +335,6 @@ def main_worker(args):
             global_step += 1
 
         epoch += 1
-
 
 
 def main():

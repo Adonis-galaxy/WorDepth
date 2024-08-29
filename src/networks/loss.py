@@ -4,12 +4,32 @@ import torch.nn as nn
 
 class SILogLoss(nn.Module):
     def __init__(self, SI_loss_lambda, max_depth):
+        '''
+        Scale Invariant loss for training
+
+        Arg(s):
+            SI_loss_lambda: float
+                weight for the scale invariant term
+            max_depth: float
+                maximum depth for calculating loss
+        '''
         super(SILogLoss, self).__init__()
 
         self.SI_loss_lambda = SI_loss_lambda
         self.max_depth = max_depth
 
     def forward(self, depth_pred, depth_gt):
+        '''
+        Calculate SILogloss
+
+        Arg(s):
+            depth_pred: torch.Tensor[float32]
+                N x 1 x Height (480 for nyu) x Width (640 for nyu)
+            depth_gt: torch.Tensor[float32]
+                N x 1 x Height (480 for nyu) x Width (640 for nyu)
+        Returns:
+            loss: float
+        '''
 
         loss = 0
 

@@ -181,7 +181,7 @@ class Text_Encoder(nn.Module):
         return mean, std, logvar
 
 class WorDepth(nn.Module):
-    def __init__(self, pretrained=None, max_depth=10.0, prior_mean=1.54, si_lambda=0.85, img_size=(480, 640), weight_kld=1e-3, alter_prob=0.1, legacy=False):
+    def __init__(self, pretrained=None, max_depth=10.0, prior_mean=1.54, si_lambda=0.85, img_size=(480, 640), weight_kld=1e-3, alter_prob=0.5, legacy=False):
         '''
         WorDepth Model Network class
 
@@ -196,6 +196,12 @@ class WorDepth(nn.Module):
                 lambda for loss scale invariant factor
             img_size: (int, int)
                 input image size
+            weight_kld: float
+                weight for KL Divergence Loss
+            alter_prob: float (0-1)
+                Probablity to draw from gaussian in this forward
+            legacy: bool
+                Whether to train (or eval) the legacy version, which keeps skip connection during feature decoding
         '''
         super().__init__()
         self.prior_mean = prior_mean
@@ -259,6 +265,9 @@ class WorDepth(nn.Module):
                 N x text_feat_dim(1024 by default)
             depth_gt: torch.Tensor[float32]
                 N x 1 x Height (480 for nyu) x Width (640 for nyu)
+            sample_from_gaussian: bool
+                Whether sample from gaussian in this forward, specify as False during evaluation
+
         Returns:
             depth_pred: torch.Tensor[float32]
                 N x 1 x Height (480 for nyu) x Width (640 for nyu)
@@ -308,9 +317,8 @@ class WorDepth(nn.Module):
         # The intuition is to use regional img feat to predict eps for each patch
         # Then sample the maximum likely layout for this patch from language generation
         d_feat = mean_txt_mul + std_txt_mul * eps_img  # B*128*30*40, upsample to be the depth feature
-        #
+
         # Upsampling depth feature, get rid of visual signal when sample eps from Gaussian
-        # if sample_from_gaussian is True:
         if self.legacy is not True:  # remove all skip connection
             x = torch.zeros_like(x)
             x3 = torch.zeros_like(x3)
