@@ -65,7 +65,7 @@ For simplicity, we have extracted image caption using [ExpansionNet v2](https://
 
 ## Setup Datasets ##
 ### Prepare Datasets ###
-Download [NYU-Depth-v2](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html) and [KITTI](https://www.cvlibs.net/datasets/kitti/)
+Download [NYU-Depth-v2](https://cs.nyu.edu/~fergus/datasets/nyu_depth_v2.html) and [KITTI](https://www.cvlibs.net/datasets/kitti/). Or you can refer to [KBNet](https://github.com/alexklwong/calibrated-backprojection-network) to prepare datasets through the provided download scripts.
 
 Then change the data_path and gt_path in configs.
 
