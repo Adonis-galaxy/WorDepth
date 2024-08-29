@@ -71,8 +71,8 @@ Then change the data_path and gt_path in configs.
 
 The structure of dataset should look like this:
 
-    ├── nyu_depth_v2                     # path to nyu-depth-v2 data_path and gt_path
-    │   ├── official_splits
+    ├── nyu_depth_v2
+    │   ├── official_splits             # path to nyu-depth-v2 data_path_eval and gt_path_eval
     │   │   ├── test
     │   │   │   ├── bathroom
     │   │   │   │   ├── rgb_00045.jpg
@@ -80,21 +80,21 @@ The structure of dataset should look like this:
     │   │   │   │   ├── ...
     │   │   ├── train                    # We don't use this part
     │   │   │   ├── ...
-    │   ├── sync
+    │   ├── sync                           # path to nyu-depth-v2 data_path and gt_path
     │   │   ├── basement_0001a
     │   │   │   ├── rgb_00000.jpg
     │   │   │   ├── rgb_00001.jpg
     │   │   │   ├── ...
     └── ...
 
-    ├── kitti_raw_data                     # path to kitti data_path
+    ├── kitti_raw_data                     # path to kitti data_path and data_path_eval
     │   ├── 2011_09_26                     # name of dataset
     │   │   ├── 2011_09_26_drive_0001_sync
     │   │   │   ├── ...
     └── ...
 
 
-    ├── kitti_ground_truth                 # path to kitti gt_path
+    ├── kitti_ground_truth                 # path to kitti gt_path and gt_path_eval
     │   ├── 2011_09_26_drive_0001_sync
     │   │   ├── ...
     └── ...

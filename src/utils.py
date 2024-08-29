@@ -7,7 +7,6 @@ from torchvision import transforms
 import os, sys
 import numpy as np
 import math
-import torch
 
 
 def convert_arg_line_to_args(arg_line):
@@ -32,24 +31,24 @@ def get_num_lines(file_path):
     return len(lines)
 
 
-def colorize(value, vmin=None, vmax=None, cmap='Greys'):
-    value = value.cpu().numpy()[:, :, :]
-    value = np.log10(value)
+# def colorize(value, vmin=None, vmax=None, cmap='Greys'):
+#     value = value.cpu().numpy()[:, :, :]
+#     value = np.log10(value)
 
-    vmin = value.min() if vmin is None else vmin
-    vmax = value.max() if vmax is None else vmax
+#     vmin = value.min() if vmin is None else vmin
+#     vmax = value.max() if vmax is None else vmax
 
-    if vmin != vmax:
-        value = (value - vmin) / (vmax - vmin)
-    else:
-        value = value*0.
+#     if vmin != vmax:
+#         value = (value - vmin) / (vmax - vmin)
+#     else:
+#         value = value*0.
 
-    cmapper = matplotlib.cm.get_cmap(cmap)
-    value = cmapper(value, bytes=True)
+#     cmapper = matplotlib.cm.get_cmap(cmap)
+#     value = cmapper(value, bytes=True)
 
-    img = value[:, :, :3]
+#     img = value[:, :, :3]
 
-    return img.transpose((2, 0, 1))
+#     return img.transpose((2, 0, 1))
 
 
 def normalize_result(value, vmin=None, vmax=None):
