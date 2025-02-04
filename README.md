@@ -2,7 +2,7 @@
 
 Official implementation of the paper "WorDepth: Variational Language Prior for Monocular Depth Estimation"
 
-Accepted by CVPR 2024
+_**Accepted by CVPR 2024**_
 
 Paper Link: https://arxiv.org/abs/2404.03635
 
